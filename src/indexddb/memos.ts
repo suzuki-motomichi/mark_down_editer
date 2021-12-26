@@ -12,7 +12,7 @@ const database = new Dexie('markdown-editor')
 database.version(1).stores({ memos: '&datetime' })
 // データを扱うテーブルクラスを取得
 const memos: Dexie.Table<MemoRecord, string> = database.table('memos')
-
+// 非同期処理,asyncを書いたらawaitで戻り値を受け取れる
 export const putMemo = async (title: string, text: string): Promise<void> => {
   // ISOというフォーマットで出力(ISO 8601 は国際規格の日付と時刻の表記)
   const datetime = new Date().toISOString()

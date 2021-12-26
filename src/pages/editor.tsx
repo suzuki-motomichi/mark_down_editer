@@ -5,6 +5,9 @@ import * as ReactMarkdown from 'react-markdown'
 // ボタンコンポーネントとIndexedDB保存処理を組み込む
 import { putMemo } from '../indexddb/memos'
 import { Button } from '../components/button'
+import { SaveModal } from '../components/save_modal'
+
+const { useState } = React
 
 const Header = styled.header`
   align-content: center;
@@ -62,10 +65,9 @@ const StorageKey = 'pages/editor:text'
 export const Editor: React.FC = () => {
   // 上に書いたuseStateを使い、以下の１行で状態を管理する処理
   const [text, setText] = useStateWithStorage('',StorageKey)
+// 初期状態ではモーダルを出さないので、デフォルト値は false
+  const [showModal, setShowModal] = useState(false)
 
-  const saveMemo = (): void => {
-    putMemo('TITLE', text)
-  }
 
   return (
     // 描画されないタグ( <React.Fragment> の略 )
@@ -73,7 +75,8 @@ export const Editor: React.FC = () => {
       <Header>
         Markdown Editor
         <HeaderControl>
-          <Button onClick={saveMemo}>
+          {/* ボタンを押した場合にモーダル表示のフラグをONにする */}
+          <Button onClick={() => setShowModal(true)}>
             保存する
           </Button>
         </HeaderControl>
@@ -90,6 +93,17 @@ export const Editor: React.FC = () => {
   <ReactMarkdown>{text}</ReactMarkdown>
         </Preview>
       </Wrapper>
+      {/* showModalがtrueであれば&&以降の処理をする */}
+      {showModal && (
+        <SaveModal
+        onSave={(title: string): void => {
+          putMemo(title, text)
+          setShowModal(false)
+        }}
+        // モーダルを閉じる
+        onCancel={() => setShowModal(false)}
+        />
+      )}
     </>
   )
 }

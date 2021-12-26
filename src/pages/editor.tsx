@@ -1,6 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import { useStateWithStorage } from '../hooks/user_state_with_storage'
+import * as ReactMarkdown from 'react-markdown'
 
 const Header = styled.header`
   font-size: 1.5rem;
@@ -63,7 +64,9 @@ export const Editor: React.FC = () => {
           // TextArea の value という属性に51行目のuseStateで管理してる変数textにテキストの内容を渡す
           value={text}
           />
-        <Preview>プレビューエリア</Preview>
+        <Preview>
+  <ReactMarkdown>{text}</ReactMarkdown>
+        </Preview>
       </Wrapper>
     </>
   )

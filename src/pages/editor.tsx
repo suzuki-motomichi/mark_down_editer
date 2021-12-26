@@ -2,10 +2,19 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { useStateWithStorage } from '../hooks/user_state_with_storage'
 import * as ReactMarkdown from 'react-markdown'
+// ボタンコンポーネントとIndexedDB保存処理を組み込む
+import { putMemo } from '../indexddb/memos'
+import { Button } from '../components/button'
+import { SaveModal } from '../components/save_modal'
+
+const { useState } = React
 
 const Header = styled.header`
+  align-content: center;
+  display: flex;
   font-size: 1.5rem;
   height: 2rem;
+  justify-content: space-between;
   left: 0;
   line-height: 2rem;
   padding: 0.5rem 1rem;
@@ -20,6 +29,12 @@ const Wrapper = styled.div`
   position: fixed;
   right: 0;
   top: 3rem;
+`
+
+const HeaderControl = styled.div`
+height: 2rem;
+display: flex;
+align-content: center;
 `
 
 const TextArea = styled.textarea`
@@ -50,11 +65,21 @@ const StorageKey = 'pages/editor:text'
 export const Editor: React.FC = () => {
   // 上に書いたuseStateを使い、以下の１行で状態を管理する処理
   const [text, setText] = useStateWithStorage('',StorageKey)
+// 初期状態ではモーダルを出さないので、デフォルト値は false
+  const [showModal, setShowModal] = useState(false)
+
+
   return (
     // 描画されないタグ( <React.Fragment> の略 )
     <>
       <Header>
         Markdown Editor
+        <HeaderControl>
+          {/* ボタンを押した場合にモーダル表示のフラグをONにする */}
+          <Button onClick={() => setShowModal(true)}>
+            保存する
+          </Button>
+        </HeaderControl>
       </Header>
       <Wrapper>
         {/* 以下TextAreaの各属性の状態に関する処理 */}
@@ -68,6 +93,17 @@ export const Editor: React.FC = () => {
   <ReactMarkdown>{text}</ReactMarkdown>
         </Preview>
       </Wrapper>
+      {/* showModalがtrueであれば&&以降の処理をする */}
+      {showModal && (
+        <SaveModal
+        onSave={(title: string): void => {
+          putMemo(title, text)
+          setShowModal(false)
+        }}
+        // モーダルを閉じる
+        onCancel={() => setShowModal(false)}
+        />
+      )}
     </>
   )
 }

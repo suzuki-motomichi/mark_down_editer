@@ -1,7 +1,6 @@
 import * as React from 'react'
 import styled from 'styled-components'
-// useState 関数を React から取り出す
-const { useState } = React
+import { useStateWithStorage } from '../hooks/user_state_with_storage'
 
 const Header = styled.header`
   font-size: 1.5rem;
@@ -44,10 +43,12 @@ const Preview = styled.div`
   top: 0;
   width: 50vw;
 `
+// localStorage でデータの参照・保存に使うキー名を決める,'ファイルパス:値の名前'
+const StorageKey = 'pages/editor:text'
 // Editor という変数は React.FC という型(Function Componentの略)
 export const Editor: React.FC = () => {
   // 上に書いたuseStateを使い、以下の１行で状態を管理する処理
-  const [text, setText] = useState<string>('')
+  const [text, setText] = useStateWithStorage('',StorageKey)
   return (
     // 描画されないタグ( <React.Fragment> の略 )
     <>
@@ -58,12 +59,8 @@ export const Editor: React.FC = () => {
         {/* 以下TextAreaの各属性の状態に関する処理 */}
         <TextArea
         // onChangeでテキストの内容が変更された時に実行される関数を渡す、eventという値が引数となる
-          onChange= {(event) => {
-            // event.target.value にテキストの内容が格納される
-            // 50行目のsetTextに引数として渡すことで、状態を更新
-            setText(event.target.value)
-          }}
-          // TextArea の value という属性に50行目のuseStateで管理してる変数textにテキストの内容を渡す
+          onChange= {(event) => setText(event.target.value)}
+          // TextArea の value という属性に51行目のuseStateで管理してる変数textにテキストの内容を渡す
           value={text}
           />
         <Preview>プレビューエリア</Preview>

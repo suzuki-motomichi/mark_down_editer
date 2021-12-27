@@ -49,12 +49,14 @@ const Preview = styled.div`
   top: 0;
   width: 50vw;
 `
-// localStorage でデータの参照・保存に使うキー名を決める,'ファイルパス:値の名前'
-const StorageKey = 'pages/editor:text'
+interface Props {
+  text: string
+  setText: (text: string) => void
+}
 // Editor という変数は React.FC という型(Function Componentの略)
-export const Editor: React.FC = () => {
+export const Editor: React.FC<Props> = (props) => {
   // 上に書いたuseStateを使い、以下の１行で状態を管理する処理
-  const [text, setText] = useStateWithStorage('',StorageKey)
+  const {text, setText} = props
 // 初期状態ではモーダルを出さないので、デフォルト値は false
   const [showModal, setShowModal] = useState(false)
 

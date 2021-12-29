@@ -6,22 +6,11 @@ import * as ReactMarkdown from 'react-markdown'
 import { putMemo } from '../indexddb/memos'
 import { Button } from '../components/button'
 import { SaveModal } from '../components/save_modal'
+// react-routerからLinkという要素をインポート
+import { Link } from 'react-router-dom'
+import { Header } from '../components/header'
 
 const { useState } = React
-
-const Header = styled.header`
-  align-content: center;
-  display: flex;
-  font-size: 1.5rem;
-  height: 2rem;
-  justify-content: space-between;
-  left: 0;
-  line-height: 2rem;
-  padding: 0.5rem 1rem;
-  position: fixed;
-  right: 0;
-  top: 0;
-`
 
 const Wrapper = styled.div`
   bottom: 0;
@@ -31,10 +20,11 @@ const Wrapper = styled.div`
   top: 3rem;
 `
 
-const HeaderControl = styled.div`
-height: 2rem;
-display: flex;
-align-content: center;
+const HeaderArea = styled.div`
+position: fixed;
+right: 0;
+top: 0;
+left: 0;
 `
 
 const TextArea = styled.textarea`
@@ -59,12 +49,14 @@ const Preview = styled.div`
   top: 0;
   width: 50vw;
 `
-// localStorage でデータの参照・保存に使うキー名を決める,'ファイルパス:値の名前'
-const StorageKey = 'pages/editor:text'
+interface Props {
+  text: string
+  setText: (text: string) => void
+}
 // Editor という変数は React.FC という型(Function Componentの略)
-export const Editor: React.FC = () => {
-  // 上に書いたuseStateを使い、以下の１行で状態を管理する処理
-  const [text, setText] = useStateWithStorage('',StorageKey)
+export const Editor: React.FC<Props> = (props) => {
+  // 呼び出し元からパラメータとして渡される
+  const {text, setText} = props
 // 初期状態ではモーダルを出さないので、デフォルト値は false
   const [showModal, setShowModal] = useState(false)
 
@@ -72,15 +64,18 @@ export const Editor: React.FC = () => {
   return (
     // 描画されないタグ( <React.Fragment> の略 )
     <>
-      <Header>
-        Markdown Editor
-        <HeaderControl>
+      <HeaderArea>
+        {/* ヘッダーコンポーネントを呼び出している箇所 */}
+        <Header title= "Markdown Editor">
           {/* ボタンを押した場合にモーダル表示のフラグをONにする */}
           <Button onClick={() => setShowModal(true)}>
             保存する
           </Button>
-        </HeaderControl>
-      </Header>
+          <Link to="/history">
+            履歴を見る
+          </Link>
+        </Header>
+      </HeaderArea>
       <Wrapper>
         {/* 以下TextAreaの各属性の状態に関する処理 */}
         <TextArea

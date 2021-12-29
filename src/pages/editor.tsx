@@ -55,7 +55,7 @@ interface Props {
 }
 // Editor という変数は React.FC という型(Function Componentの略)
 export const Editor: React.FC<Props> = (props) => {
-  // 上に書いたuseStateを使い、以下の１行で状態を管理する処理
+  // 呼び出し元からパラメータとして渡される
   const {text, setText} = props
 // 初期状態ではモーダルを出さないので、デフォルト値は false
   const [showModal, setShowModal] = useState(false)

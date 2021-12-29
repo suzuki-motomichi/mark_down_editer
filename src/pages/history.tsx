@@ -50,6 +50,7 @@ overflow: hidden;
 text-overflow: ellipsis;
 white-space: nowrap;
 `
+// テキストの状態を更新る関数をパラメータとして受け取るeditor.tsxにもある
 interface Props {
   setText: (text: string) => void
 }
@@ -74,6 +75,7 @@ export const History: React.FC<Props> = (props) => {
     </HeaderArea>
       <Wrapper>
       {memos.map(memo => (
+        // メモをクリックした時の処理
         <Memo
         key={memo.datetime}
         onClick={() => {

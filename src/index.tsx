@@ -11,7 +11,7 @@ import {
 } from 'react-router-dom'
 import { Editor } from './pages/editor' // editor.tsxをインポートし、下で呼び出す(表示)
 import { History } from './pages/history'
-import { useStateWithStorage } from './hooks/user_state_with_storage'
+import { useStateWithStorage } from './hooks/user_state_with_storage' // ファイルをインポート
 
 // スタイルをページ全体に適用
 const GlobalStyle = createGlobalStyle`
@@ -21,13 +21,16 @@ const GlobalStyle = createGlobalStyle`
   `
 
   const StrageKey = '/editor:text'
+  // useStateを使うためにMainを関数化
   const Main: React.FC = () => {
+    // editor画面で管理してた状態を管理
     const [text, setText] = useStateWithStorage('',StrageKey)
     return(
     <>
       <GlobalStyle />
       <Router>
         <Switch>
+          {/* 各ページに対して必要なパラメータを渡す */}
         <Route exact path="/editor">
           <Editor
           text={text}

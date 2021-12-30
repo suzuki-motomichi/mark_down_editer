@@ -9,8 +9,12 @@ import { SaveModal } from '../components/save_modal'
 // react-routerからLinkという要素をインポート
 import { Link } from 'react-router-dom'
 import { Header } from '../components/header'
+// Workerの読み込み、src/worker/test.ts の型定義と合わせる為にworker-loader!を記入
+import TestWorker from 'worker-loader!../worker/test.ts'
 
-const { useState } = React
+const testWorker = new TestWorker()
+// Worker インスタンスの生成
+const { useState, useEffect } = React
 
 const Wrapper = styled.div`
   bottom: 0;
@@ -60,6 +64,17 @@ export const Editor: React.FC<Props> = (props) => {
 // 初期状態ではモーダルを出さないので、デフォルト値は false
   const [showModal, setShowModal] = useState(false)
 
+  useEffect(() => {
+// userEffectを使って初回のみWorkerから結果を受け取る関数を登録
+    testWorker.onmessage = (event) => {
+      console.log('Main thread Received:', event.data)
+    }
+  },[])
+
+  useEffect(() => {
+// useEffectを使ってテキスト変更時にWorkerにデータを送信
+    testWorker.postMessage(text)
+  },[text])
 
   return (
     // 描画されないタグ( <React.Fragment> の略 )
